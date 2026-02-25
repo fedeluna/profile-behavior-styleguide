@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design System — Tailwind v4</title>
+  <style>
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ─── Design tokens ─────────────────────────────────────── */
+    :root {
+      --zinc-50: #f7f4ef;
+      --zinc-100: #eeebe7;
+      --zinc-200: #cfccc9;
+      --zinc-300: #bebbba;
+      --zinc-400: #939190;
+      --zinc-500: #656362;
+      --zinc-600: #434241;
+      --zinc-700: #262626;
+      --zinc-800: #1b1b1a;
+      --zinc-900: #151514;
+      --zinc-950: #0e0f10;
+
+      --emerald-50: #c9ede1;
+      --emerald-100: #8bfad5;
+      --emerald-200: #1cf6ae;
+      --emerald-300: #01d595;
+      --emerald-400: #09c38a;
+      --emerald-500: #0b7452;
+      --emerald-600: #075138;
+      --emerald-700: #043423;
+      --emerald-800: #062318;
+      --emerald-900: #04180f;
+      --emerald-950: #030f09;
+
+      --neutral-black: #000000;
+      --neutral-white: #ffffff;
+
+      --border-width-l: 2px;
+      --border-width-m: 1px;
+      --border-width-s: 0.5px;
+      --corner-radius-full: 500px;
+      --corner-radius-l: 16px;
+      --corner-radius-m: 8px;
+      --corner-radius-s: 4px;
+      --section-padding-xl: 160px;
+      --section-padding-l: 144px;
+      --section-padding-m: 120px;
+      --section-padding-s: 80px;
+      --section-padding-xs: 64px;
+      --section-padding-top-page: 224px;
+      --site-grid-columns: 12;
+      --site-grid-gutter: 16px;
+      --site-grid-margin: 40px;
+      --site-grid-width: 1440px;
+    }
+
+    /* ─── Semantic tokens — Dark ─────────────────────────────── */
+    [data-theme="dark"] {
+      --brand: #1cf6ae;
+      --brand-soft: #062318;
+      --on-brand: #030f09;
+      --on-brand-soft: #1cf6ae;
+      --on-surface: #f7f4ef;
+      --on-surface-soft: #939190;
+      --surface: #0e0f10;
+      --surface-1: #1b1b1a;
+      --surface-2: #262626;
+      --surface-3: #434241;
+
+      --ui-bg: var(--surface);
+      --ui-card: var(--surface-1);
+      --ui-border: var(--surface-2);
+      --ui-text: var(--on-surface);
+      --ui-text-soft: var(--on-surface-soft);
+      --ui-accent: var(--brand);
+      --ui-accent-bg: var(--brand-soft);
+      --ui-accent-text: var(--on-brand);
+    }
+
+    /* ─── Semantic tokens — Light ────────────────────────────── */
+    [data-theme="light"] {
+      --brand: #09c38a;
+      --brand-soft: #c9ede1;
+      --on-brand: #030f09;
+      --on-brand-soft: #0b7452;
+      --on-surface: #0e0f10;
+      --on-surface-soft: #656362;
+      --surface: #f7f4ef;
+      --surface-1: #eeebe7;
+      --surface-2: #cfccc9;
+      --surface-3: #bebbba;
+
+      --ui-bg: var(--surface);
+      --ui-card: var(--surface-1);
+      --ui-border: var(--surface-2);
+      --ui-text: var(--on-surface);
+      --ui-text-soft: var(--on-surface-soft);
+      --ui-accent: var(--brand);
+      --ui-accent-bg: var(--brand-soft);
+      --ui-accent-text: var(--on-brand);
+    }
+
+    /* ─── Syntax / TW accent colors (theme-aware) ───────────── */
+    [data-theme="dark"] {
+      --tw-accent: #38bdf8;
+      --tw-accent-bg: rgba(56, 189, 248, .1);
+      --tw-accent-bd: rgba(56, 189, 248, .25);
+      --tw-accent-bh: rgba(56, 189, 248, .22);
+      --tw-accent-bdh: rgba(56, 189, 248, .5);
+      --css-prop: #82aaff;
+      --css-atrule: #c792ea;
+    }
+
+    [data-theme="light"] {
+      --tw-accent: #0284c7;
+      --tw-accent-bg: rgba(2, 132, 199, .08);
+      --tw-accent-bd: rgba(2, 132, 199, .3);
+      --tw-accent-bh: rgba(2, 132, 199, .16);
+      --tw-accent-bdh: rgba(2, 132, 199, .5);
+      --css-prop: #1d4ed8;
+      --css-atrule: #7c3aed;
+    }
+
+    /* ─── Base ───────────────────────────────────────────────── */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--ui-bg);
+      color: var(--ui-text);
+      min-height: 100vh;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 100px;
+    }
+
+    /* ─── Header ─────────────────────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ui-bg);
+      border-bottom: 1px solid var(--ui-border);
+      padding: 0 32px;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ui-accent);
+      background: var(--ui-accent-bg);
+      border: 1px solid var(--ui-accent);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .tw-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--tw-accent);
+      background: var(--tw-accent-bg);
+      border: 1px solid var(--tw-accent-bd);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ui-text);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ─── Search ─────────────────────────────────────────────── */
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-input {
+      background: var(--ui-card);
+      border: 1px solid var(--ui-border);
+      border-radius: 8px;
+      color: var(--ui-text);
+      font-size: 13px;
+      padding: 7px 12px 7px 32px;
+      width: 200px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: var(--ui-text-soft);
+    }
+
+    .search-input:focus {
+      border-color: var(--ui-accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ui-text-soft);
+      pointer-events: none;
+      font-size: 13px;
+    }
+
+    /* ─── Format toggle ──────────────────────────────────────── */
+    .format-toggle {
+      display: flex;
+      background: var(--ui-card);
+      border: 1px solid var(--ui-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .format-btn {
+      background: none;
+      border: none;
+      color: var(--ui-text-soft);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: inherit;
+      padding: 6px 10px;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .format-btn.active {
+      background: var(--ui-accent);
+      color: var(--ui-accent-text);
+    }
+
+    .format-btn:hover:not(.active) {
+      color: var(--ui-text);
+    }
+
+    /* ─── Buttons ────────────────────────────────────────────── */
+    .btn {
+      background: var(--ui-accent);
+      border: none;
+      border-radius: 8px;
+      color: var(--ui-accent-text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 7px 13px;
+      text-transform: uppercase;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid var(--ui-border);
+      color: var(--ui-text-soft);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--ui-accent);
+      color: var(--ui-accent);
+      opacity: 1;
+    }
+
+    .theme-toggle {
+      background: var(--ui-card);
+      border: 1px solid var(--ui-border);
+      border-radius: 8px;
+      color: var(--ui-text);
+      cursor: pointer;
+      font-size: 15px;
+      padding: 6px 9px;
+      transition: border-color 0.15s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--ui-accent);
+    }
+
+    /* ─── Nav tabs ───────────────────────────────────────────── */
+    .nav {
+      display: flex;
+      gap: 2px;
+      padding: 28px 0 0;
+      border-bottom: 1px solid var(--ui-border);
+      margin-bottom: 16px;
+    }
+
+    .method-note {
+      font-size: 14px;
+      color: var(--ui-text-soft);
+      margin-bottom: 36px;
+    }
+
+    .method-note a {
+      color: var(--ui-accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .method-note a:hover {
+      border-bottom-color: var(--ui-accent);
+    }
+
+    .nav-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--ui-text-soft);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px 12px;
+      margin-bottom: -1px;
+      transition: all 0.15s;
+    }
+
+    .nav-tab:hover {
+      color: var(--ui-text);
+    }
+
+    .nav-tab.active {
+      color: var(--ui-accent);
+      border-bottom-color: var(--ui-accent);
+    }
+
+    /* ─── Sections ───────────────────────────────────────────── */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ui-text);
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--ui-text-soft);
+      margin-top: 4px;
+    }
+
+    /* ─── Callout ────────────────────────────────────────────── */
+    .callout {
+      background: var(--tw-accent-bg);
+      border: 1px solid var(--tw-accent-bd);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--ui-text-soft);
+      margin-bottom: 28px;
+    }
+
+    .callout code {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 11.5px;
+      color: var(--tw-accent);
+      background: var(--tw-accent-bg);
+      border: 1px solid rgba(56, 189, 248, .2);
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+
+    .callout strong {
+      color: var(--ui-text);
+    }
+
+    /* ─── CSS Snippet ────────────────────────────────────────── */
+    .snippet-block {
+      background: var(--ui-card);
+      border: 1px solid var(--ui-border);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .snippet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--ui-border);
+    }
+
+    .snippet-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ui-text-soft);
+    }
+
+    .snippet-code {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 12px;
+      color: var(--ui-text-soft);
+      padding: 16px;
+      max-height: 220px;
+      overflow-y: auto;
+      white-space: pre;
+      line-height: 1.7;
+    }
+
+    .css-prop {
+      color: var(--css-prop);
+    }
+
+    .css-val {
+      color: var(--ui-text);
+    }
+
+    .css-comment {
+      color: var(--ui-text-soft);
+      opacity: 0.55;
+    }
+
+    .css-atrule {
+      color: var(--css-atrule);
+    }
+
+    .css-variant {
+      color: var(--css-atrule);
+    }
+
+    /* ─── Palette group ──────────────────────────────────────── */
+    .palette-group {
+      margin-bottom: 36px;
+    }
+
+    .group-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ui-text-soft);
+      margin-bottom: 12px;
+    }
+
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    /* ─── Swatch card ────────────────────────────────────────── */
+    .swatch-card {
+      border: 1px solid var(--ui-border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+    }
+
+    .swatch-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .swatch-card.hidden {
+      display: none;
+    }
+
+    .swatch-color {
+      height: 68px;
+      width: 100%;
+      position: relative;
+    }
+
+    .swatch-copy-hint {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.15s;
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .swatch-card:hover .swatch-copy-hint {
+      opacity: 1;
+    }
+
+    .swatch-info {
+      background: var(--ui-card);
+      padding: 9px 11px;
+    }
+
+    .swatch-name {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ui-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .swatch-value {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 11px;
+      color: var(--ui-text-soft);
+      margin-top: 2px;
+    }
+
+    .swatch-tw-key {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 10px;
+      color: var(--tw-accent);
+      margin-top: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .swatch-tw-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-top: 5px;
+    }
+
+    .tw-prefix-pill {
+      background: var(--tw-accent-bg);
+      border: 1px solid var(--tw-accent-bd);
+      border-radius: 3px;
+      color: var(--tw-accent);
+      cursor: pointer;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 5px;
+      transition: background .1s, border-color .1s;
+      white-space: nowrap;
+    }
+
+    .tw-prefix-pill:hover {
+      background: var(--tw-accent-bh);
+      border-color: var(--tw-accent-bdh);
+    }
+
+    /* ─── Semantic section ───────────────────────────────────── */
+    .mode-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--ui-card);
+      border: 1px solid var(--ui-border);
+      border-radius: 8px;
+      padding: 3px;
+      width: fit-content;
+      margin-bottom: 28px;
+    }
+
+    .mode-tab {
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: var(--ui-text-soft);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 14px;
+      transition: all 0.15s;
+    }
+
+    .mode-tab.active {
+      background: var(--ui-accent);
+      color: var(--ui-accent-text);
+    }
+
+    /* ─── Live preview ───────────────────────────────────────── */
+    .preview-section {
+      margin-bottom: 40px;
+    }
+
+    .preview-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ui-text-soft);
+      margin-bottom: 12px;
+    }
+
+    .preview-canvas {
+      border: 1px solid var(--ui-border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      min-height: 340px;
+      transition: background 0.25s;
+    }
+
+    .preview-canvas[data-mode="dark"] {
+      background: #0e0f10;
+    }
+
+    .preview-canvas[data-mode="light"] {
+      background: #f7f4ef;
+    }
+
+    /* ─── Preview token tooltip ─────────────────────────────── */
+    .preview-tooltip {
+      position: fixed;
+      z-index: 200;
+      background: #0e0f10;
+      color: #1cf6ae;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 5px;
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.1s;
+      border: 1px solid rgba(28, 246, 174, 0.25);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .preview-tooltip.show {
+      opacity: 1;
+    }
+
+    [data-token] {
+      cursor: help;
+    }
+
+    [data-token]:hover {
+      outline: 1.5px dashed rgba(128, 128, 128, 0.3);
+      outline-offset: 2px;
+    }
+
+    .preview-band {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48%;
+      border-radius: 4px;
+      transition: background 0.25s;
+    }
+
+    .preview-ui {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 0;
+      padding: 36px 36px 28px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .preview-heading {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      align-self: start;
+      padding-right: 24px;
+      transition: color 0.25s;
+    }
+
+    .preview-body {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 12px;
+      line-height: 1.55;
+      padding: 10px 12px;
+      border-radius: 6px;
+      align-self: start;
+      transition: color 0.25s, border-color 0.25s;
+    }
+
+    .preview-card {
+      grid-column: 2;
+      grid-row: 2 / 4;
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-top: 16px;
+      margin-left: 8px;
+      min-height: 140px;
+      transition: background 0.25s;
+    }
+
+    .preview-card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .preview-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      transition: color 0.25s;
+      letter-spacing: -0.3px;
+    }
+
+    .preview-card-body {
+      font-size: 11px;
+      line-height: 1.55;
+      transition: color 0.25s;
+    }
+
+    .preview-card-arrow {
+      align-self: flex-end;
+      font-size: 14px;
+      transition: color 0.25s;
+    }
+
+    .preview-ctas {
+      grid-column: 1;
+      grid-row: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-self: end;
+      padding-right: 24px;
+      padding-top: 20px;
+    }
+
+    .preview-btn {
+      border: none;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.25s, color 0.25s;
+      width: 100%;
+    }
+
+    /* Semantic token grid */
+    .semantic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 8px;
+    }
+
+    .semantic-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--ui-card);
+      border: 1px solid var(--ui-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+    }
+
+    .semantic-card:hover {
+      transform: translateY(-1px);
+      border-color: var(--ui-accent);
+    }
+
+    .semantic-card.hidden {
+      display: none;
+    }
+
+    .semantic-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      border: 1px solid rgba(128, 128, 128, 0.15);
+      margin-top: 2px;
+      transition: background 0.25s;
+    }
+
+    .semantic-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .semantic-name {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ui-text);
+    }
+
+    .semantic-usage {
+      font-size: 11px;
+      color: var(--ui-text-soft);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .semantic-alias {
+      font-size: 10px;
+      color: var(--ui-accent);
+      margin-top: 4px;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    .copy-hint {
+      font-size: 10px;
+      color: var(--ui-text-soft);
+      opacity: 0;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .semantic-card:hover .copy-hint {
+      opacity: 1;
+    }
+
+    /* ─── Toast ──────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--ui-accent);
+      color: var(--ui-accent-text);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 9px 18px;
+      border-radius: 100px;
+      opacity: 0;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+      pointer-events: none;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── Scrollbar ──────────────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--ui-border);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <span class="logo-badge">Profile Behavior Styleguide</span>
+        <span class="tw-badge">Tailwind v4</span>
+      </div>
+      <div class="header-right">
+        <div class="format-toggle" title="What gets copied when you click a token">
+          <button class="format-btn active" data-format="hex">HEX</button>
+          <button class="format-btn" data-format="var">VAR</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+        <button class="btn btn-ghost" id="copyAllBtn">Copy all CSS</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div style="padding: 32px 0 0;">
+      <h2 style="font-size: 13px; font-weight: 500; color: var(--ui-text-soft); letter-spacing: 0.01em;">Last updated:
+        February 25, 2026. By Federico Luna</h2>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-tab active" data-tab="palette">Color Palette for Tailwind</button>
+      <button class="nav-tab" data-tab="system">Refokus Color System</button>
+    </nav>
+
+    <!-- ═══ COLOR PALETTE ═══════════════════════════════════════════ -->
+    <section class="section active" id="tab-palette">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Color Palette</div>
+          <div class="section-subtitle">Palette tokens mapped to Tailwind v4. Click any swatch to copy — use the HEX /
+            VAR toggle, or click a class pill to copy a specific Tailwind utility.</div>
+        </div>
+        <button class="btn btn-ghost" onclick="copyGroupCSS('palette')">Copy @theme block</button>
+      </div>
+
+      <div class="callout">
+        <strong>How to use:</strong> Paste the <code>@theme</code> block below into your CSS entry file (e.g.
+        <code>globals.css</code>). Tailwind v4 will automatically generate utility classes for every token —
+        <code>bg-zinc-900</code>, <code>text-emerald-400</code>, <code>border-zinc-200</code>, and so on. Click the
+        <strong>bg-</strong> / <strong>text-</strong> / <strong>border-</strong> pills on any swatch to copy the
+        specific class.
+      </div>
+
+      <div class="snippet-block">
+        <div class="snippet-header">
+          <span class="snippet-label">globals.css — @theme palette</span>
+          <button class="btn" onclick="copyGroupCSS('palette')">Copy snippet</button>
+        </div>
+        <pre class="snippet-code" id="snippet-palette"></pre>
+      </div>
+
+      <div class="palette-group">
+        <div class="group-label">Zinc</div>
+        <div class="swatch-grid" id="swatches-zinc"></div>
+      </div>
+      <div class="palette-group">
+        <div class="group-label">Emerald</div>
+        <div class="swatch-grid" id="swatches-emerald"></div>
+      </div>
+      <div class="palette-group">
+        <div class="group-label">Neutral</div>
+        <div class="swatch-grid" id="swatches-neutral"></div>
+      </div>
+    </section>
+
+    <!-- ═══ COLOR SYSTEM ════════════════════════════════════════════ -->
+    <section class="section" id="tab-system">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Color System</div>
+          <div class="section-subtitle">Semantic tokens. Values change per mode. Click any card to copy.</div>
+        </div>
+        <button class="btn btn-ghost" onclick="copyGroupCSS('system')">Copy system CSS</button>
+      </div>
+
+      <p class="method-note">
+        Refokus use a design system approach caleld Lio Method. Instead of defining color tokens by UI role, <a
+          href="https://theliomethod.com" target="_blank" rel="noopener">the Lio Method</a> adopts a contextual color
+        model inspired by Material Design, based on contrast and hierarchy.
+      </p>
+
+      <div class="snippet-block">
+        <div class="snippet-header">
+          <span class="snippet-label">CSS Custom Properties — both modes</span>
+          <button class="btn" onclick="copyGroupCSS('system')">Copy snippet</button>
+        </div>
+        <pre class="snippet-code" id="snippet-system"></pre>
+      </div>
+
+      <!-- Live preview -->
+      <div class="preview-section">
+        <div class="preview-section-title">Live preview — see tokens in context</div>
+        <div class="preview-canvas" id="previewCanvas" data-mode="dark" data-token="surface">
+          <div class="preview-band" id="prev-band" data-token="surface-1"></div>
+          <div class="preview-ui">
+            <p class="preview-heading" id="prev-heading" data-token="on-surface">Built for high-performance teams</p>
+            <p class="preview-body" id="prev-body" data-token="on-surface-soft" data-token2="surface-2">In performance
+              environments, misreads are costly and trust is
+              visible. Coaches and leaders use Profile to establish a shared language that holds up under scrutiny,
+              pressure, and competition.</p>
+            <div class="preview-ctas">
+              <button class="preview-btn" id="prev-btn-primary" data-token="brand" data-token2="on-brand">Explore
+                Athletics <span>↗</span></button>
+              <button class="preview-btn" id="prev-btn-secondary" data-token="brand-soft"
+                data-token2="on-brand-soft">Learn more <span>↗</span></button>
+            </div>
+            <div class="preview-card" id="prev-card-primary" data-token="surface">
+              <div class="preview-card-top">
+                <div class="preview-card-title" id="prev-card-title" data-token="on-brand-soft">Trust &amp; Compliance
+                </div>
+                <div class="preview-card-body" id="prev-card-body" data-token="on-surface-soft">Coaches and leaders use
+                  Profile to establish a shared
+                  language that holds up under scrutiny, pressure, and competition.</div>
+              </div>
+              <div class="preview-card-arrow" id="prev-card-arrow" data-token="on-surface-soft">↗</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="dark">🌙 Dark Mode</button>
+        <button class="mode-tab" data-mode="light">☀️ Light Mode</button>
+      </div>
+
+      <div class="semantic-grid" id="semantic-cards"></div>
+    </section>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="preview-tooltip" id="previewTooltip"></div>
+
+  <script>
+    // ─── DATA ──────────────────────────────────────────────────────────
+
+    const PALETTE = {
+      zinc: [
+        { name: 'Zinc/50', cssVar: '--zinc-50', twVar: '--color-zinc-50', hex: '#f7f4ef' },
+        { name: 'Zinc/100', cssVar: '--zinc-100', twVar: '--color-zinc-100', hex: '#eeebe7' },
+        { name: 'Zinc/200', cssVar: '--zinc-200', twVar: '--color-zinc-200', hex: '#cfccc9' },
+        { name: 'Zinc/300', cssVar: '--zinc-300', twVar: '--color-zinc-300', hex: '#bebbba' },
+        { name: 'Zinc/400', cssVar: '--zinc-400', twVar: '--color-zinc-400', hex: '#939190' },
+        { name: 'Zinc/500', cssVar: '--zinc-500', twVar: '--color-zinc-500', hex: '#656362' },
+        { name: 'Zinc/600', cssVar: '--zinc-600', twVar: '--color-zinc-600', hex: '#434241' },
+        { name: 'Zinc/700', cssVar: '--zinc-700', twVar: '--color-zinc-700', hex: '#262626' },
+        { name: 'Zinc/800', cssVar: '--zinc-800', twVar: '--color-zinc-800', hex: '#1b1b1a' },
+        { name: 'Zinc/900', cssVar: '--zinc-900', twVar: '--color-zinc-900', hex: '#151514' },
+        { name: 'Zinc/950', cssVar: '--zinc-950', twVar: '--color-zinc-950', hex: '#0e0f10' },
+      ],
+      emerald: [
+        { name: 'Emerald/50', cssVar: '--emerald-50', twVar: '--color-emerald-50', hex: '#c9ede1' },
+        { name: 'Emerald/100', cssVar: '--emerald-100', twVar: '--color-emerald-100', hex: '#8bfad5' },
+        { name: 'Emerald/200', cssVar: '--emerald-200', twVar: '--color-emerald-200', hex: '#1cf6ae' },
+        { name: 'Emerald/300', cssVar: '--emerald-300', twVar: '--color-emerald-300', hex: '#01d595' },
+        { name: 'Emerald/400', cssVar: '--emerald-400', twVar: '--color-emerald-400', hex: '#09c38a' },
+        { name: 'Emerald/500', cssVar: '--emerald-500', twVar: '--color-emerald-500', hex: '#0b7452' },
+        { name: 'Emerald/600', cssVar: '--emerald-600', twVar: '--color-emerald-600', hex: '#075138' },
+        { name: 'Emerald/700', cssVar: '--emerald-700', twVar: '--color-emerald-700', hex: '#043423' },
+        { name: 'Emerald/800', cssVar: '--emerald-800', twVar: '--color-emerald-800', hex: '#062318' },
+        { name: 'Emerald/900', cssVar: '--emerald-900', twVar: '--color-emerald-900', hex: '#04180f' },
+        { name: 'Emerald/950', cssVar: '--emerald-950', twVar: '--color-emerald-950', hex: '#030f09' },
+      ],
+      neutral: [
+        { name: 'neutral/black', cssVar: '--neutral-black', twVar: '--color-neutral-black', hex: '#000000' },
+        { name: 'neutral/white', cssVar: '--neutral-white', twVar: '--color-neutral-white', hex: '#ffffff' },
+      ]
+    };
+
+    // Derive primary Tailwind bg class from token name: Zinc/50 → bg-zinc-50
+    function twClass(t) { return 'bg-' + t.name.toLowerCase().replace('/', '-'); }
+
+    const SEMANTIC = {
+      dark: [
+        { name: 'brand', cssVar: '--brand', alias: 'Emerald/200', hex: '#1cf6ae', usage: 'Primary CTA background (e.g. "Explore Athletics" main button)' },
+        { name: 'brand-soft', cssVar: '--brand-soft', alias: 'Emerald/800', hex: '#062318', usage: 'Secondary CTA background (e.g. smaller/ghost brand button)' },
+        { name: 'onBrand', cssVar: '--on-brand', alias: 'Emerald/950', hex: '#030f09', usage: 'Text & icons placed ON a brand background' },
+        { name: 'onBrand-soft', cssVar: '--on-brand-soft', alias: 'Emerald/200', hex: '#1cf6ae', usage: 'Text/icons on brand-soft bg. Also used as accent text color (e.g. card titles)' },
+        { name: 'onSurface', cssVar: '--on-surface', alias: 'Zinc/50', hex: '#f7f4ef', usage: 'Primary body text & headings on surface/page background' },
+        { name: 'onSurface-soft', cssVar: '--on-surface-soft', alias: 'Zinc/400', hex: '#939190', usage: 'Muted / secondary body text, captions, supporting copy' },
+        { name: 'surface', cssVar: '--surface', alias: 'Zinc/950', hex: '#0e0f10', usage: 'Page background' },
+        { name: 'surface-1', cssVar: '--surface-1', alias: 'Zinc/800', hex: '#1b1b1a', usage: 'Card & panel background (sits on top of surface)' },
+        { name: 'surface-2', cssVar: '--surface-2', alias: 'Zinc/700', hex: '#262626', usage: 'Elevated surface, dividers, borders' },
+        { name: 'surface-3', cssVar: '--surface-3', alias: 'Zinc/600', hex: '#434241', usage: 'Higher elevation surface' },
+      ],
+      light: [
+        { name: 'brand', cssVar: '--brand', alias: 'Emerald/400', hex: '#09c38a', usage: 'Primary CTA background' },
+        { name: 'brand-soft', cssVar: '--brand-soft', alias: 'Emerald/50', hex: '#c9ede1', usage: 'Secondary CTA background' },
+        { name: 'onBrand', cssVar: '--on-brand', alias: 'Emerald/950', hex: '#030f09', usage: 'Text & icons placed ON a brand background' },
+        { name: 'onBrand-soft', cssVar: '--on-brand-soft', alias: 'Emerald/500', hex: '#0b7452', usage: 'Text/icons on brand-soft bg. Also used as accent text color' },
+        { name: 'onSurface', cssVar: '--on-surface', alias: 'Zinc/950', hex: '#0e0f10', usage: 'Primary body text & headings' },
+        { name: 'onSurface-soft', cssVar: '--on-surface-soft', alias: 'Zinc/500', hex: '#656362', usage: 'Muted / secondary text, captions' },
+        { name: 'surface', cssVar: '--surface', alias: 'Zinc/50', hex: '#f7f4ef', usage: 'Page background' },
+        { name: 'surface-1', cssVar: '--surface-1', alias: 'Zinc/100', hex: '#eeebe7', usage: 'Card & panel background' },
+        { name: 'surface-2', cssVar: '--surface-2', alias: 'Zinc/200', hex: '#cfccc9', usage: 'Elevated surface, dividers, borders' },
+        { name: 'surface-3', cssVar: '--surface-3', alias: 'Zinc/300', hex: '#bebbba', usage: 'Higher elevation surface' },
+      ]
+    };
+
+    // ─── STATE ─────────────────────────────────────────────────────────
+    let copyFormat = 'hex';
+    let currentMode = 'dark';
+    let currentTheme = 'dark';
+
+    // ─── UTILS ─────────────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => showToast('Copied: ' + text));
+    }
+
+    function getTokenCopy(t) {
+      if (copyFormat === 'var') return 'var(' + t.cssVar + ')';
+      return t.hex || t.value;
+    }
+
+    // ─── RENDER SWATCHES ───────────────────────────────────────────────
+    function renderSwatches(id, tokens) {
+      const el = document.getElementById(id);
+      el.innerHTML = '';
+      tokens.forEach(t => {
+        const key = t.name.toLowerCase().replace('/', '-'); // e.g. "zinc-50"
+        const prefixes = ['bg', 'text', 'border'];
+
+        const card = document.createElement('div');
+        card.className = 'swatch-card';
+        card.dataset.search = (t.name + ' ' + t.hex + ' ' + t.cssVar + ' ' + (t.twVar || '') + ' ' + key).toLowerCase();
+
+        const pillsHTML = prefixes.map(p =>
+          '<span class="tw-prefix-pill" data-class="' + p + '-' + key + '">' + p + '-</span>'
+        ).join('');
+
+        card.innerHTML =
+          '<div class="swatch-color" style="background:' + t.hex + '">' +
+          '<div class="swatch-copy-hint">Click to copy</div>' +
+          '</div>' +
+          '<div class="swatch-info">' +
+          '<div class="swatch-name">' + t.name + '</div>' +
+          '<div class="swatch-value">' + t.hex + '</div>' +
+          '<div class="swatch-tw-key">' + key + '</div>' +
+          '<div class="swatch-tw-pills">' + pillsHTML + '</div>' +
+          '</div>';
+
+        card.addEventListener('click', () => copyText(getTokenCopy(t)));
+        el.appendChild(card);
+
+        // Prefix pills copy the specific class; stop propagation so card click doesn't also fire
+        card.querySelectorAll('.tw-prefix-pill').forEach(pill => {
+          pill.addEventListener('click', e => {
+            e.stopPropagation();
+            copyText(pill.dataset.class);
+          });
+        });
+      });
+    }
+
+    // ─── RENDER SEMANTIC ───────────────────────────────────────────────
+    function renderSemantic(mode) {
+      const el = document.getElementById('semantic-cards');
+      el.innerHTML = '';
+      SEMANTIC[mode].forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'semantic-card';
+        card.dataset.search = (t.name + ' ' + t.hex + ' ' + t.cssVar + ' ' + t.alias + ' ' + t.usage).toLowerCase();
+        card.innerHTML =
+          '<div class="semantic-swatch" style="background:' + t.hex + '"></div>' +
+          '<div class="semantic-info">' +
+          '<div class="semantic-name">' + t.cssVar + '</div>' +
+          '<div class="semantic-usage">' + t.usage + '</div>' +
+          '<div class="semantic-alias">→ ' + t.alias + ' &nbsp;|&nbsp; ' + t.hex + '</div>' +
+          '</div>' +
+          '<span class="copy-hint">⎘</span>';
+        card.addEventListener('click', () => copyText(getTokenCopy(t)));
+        el.appendChild(card);
+      });
+    }
+
+    // ─── LIVE PREVIEW ──────────────────────────────────────────────────
+    function updatePreview(mode) {
+      const s = SEMANTIC[mode];
+      const by = {};
+      s.forEach(t => { by[t.name] = t.hex; });
+
+      const canvas = document.getElementById('previewCanvas');
+      canvas.dataset.mode = mode;
+
+      document.getElementById('prev-band').style.background = by['surface-1'];
+      document.getElementById('prev-heading').style.color = by['onSurface'];
+      const prevBody = document.getElementById('prev-body');
+      prevBody.style.color = by['onSurface-soft'];
+      prevBody.style.border = '1px solid ' + by['surface-2'];
+
+      const opposite = {};
+      SEMANTIC[mode === 'dark' ? 'light' : 'dark'].forEach(t => { opposite[t.name] = t.hex; });
+
+      const card = document.getElementById('prev-card-primary');
+      card.style.background = opposite['surface'];
+      document.getElementById('prev-card-title').style.color = opposite['onBrand-soft'];
+      document.getElementById('prev-card-body').style.color = opposite['onSurface-soft'];
+      document.getElementById('prev-card-arrow').style.color = opposite['onSurface-soft'];
+
+      const btnP = document.getElementById('prev-btn-primary');
+      btnP.style.background = by['brand'];
+      btnP.style.color = by['onBrand'];
+
+      const btnS = document.getElementById('prev-btn-secondary');
+      btnS.style.background = by['brand-soft'];
+      btnS.style.color = by['onBrand-soft'];
+    }
+
+    // ─── PREVIEW TOKEN TOOLTIP ─────────────────────────────────────────
+    (function () {
+      const tip = document.getElementById('previewTooltip');
+      const canvas = document.getElementById('previewCanvas');
+
+      canvas.addEventListener('mousemove', e => {
+        const el = e.target.closest('[data-token]');
+        if (!el) { tip.classList.remove('show'); return; }
+        const t1 = '--' + el.dataset.token;
+        const t2 = el.dataset.token2 ? '  ·  --' + el.dataset.token2 : '';
+        tip.textContent = t1 + t2;
+        // Position: prefer right of cursor, flip left if near viewport edge
+        const x = e.clientX + 14;
+        const y = e.clientY - 32;
+        tip.style.left = (x + tip.offsetWidth > window.innerWidth - 8 ? e.clientX - tip.offsetWidth - 10 : x) + 'px';
+        tip.style.top = (y < 8 ? e.clientY + 14 : y) + 'px';
+        tip.classList.add('show');
+      });
+
+      canvas.addEventListener('mouseleave', () => tip.classList.remove('show'));
+    })();
+
+    // ─── CSS SNIPPETS ──────────────────────────────────────────────────
+
+    // Palette → @theme block with --color-* namespace
+    function buildPaletteCSS() {
+      const lines = ['@theme {'];
+      const groups = { zinc: '/* ─── Zinc ───────────────────────────────── */', emerald: '/* ─── Emerald ────────────────────────────── */', neutral: '/* ─── Neutral ────────────────────────────── */' };
+      Object.entries(PALETTE).forEach(([group, tokens]) => {
+        lines.push('  ' + groups[group]);
+        tokens.forEach(t => {
+          const key = t.name.replace('/', '-');
+          lines.push('  --color-' + key + ': ' + t.hex + ';');
+        });
+        lines.push('');
+      });
+      // Remove trailing empty line before closing brace
+      if (lines[lines.length - 1] === '') lines.pop();
+      lines.push('}');
+      return lines.join('\n');
+    }
+
+    function buildSystemCSS() {
+      const toVar = alias => 'var(--' + alias.toLowerCase().replace('/', '-') + ')';
+      const lines = ['[data-theme="dark"] {'];
+      SEMANTIC.dark.forEach(t => lines.push('  ' + t.cssVar + ': ' + toVar(t.alias) + '; /* ' + t.hex + ' */'));
+      lines.push('}\n\n[data-theme="light"] {');
+      SEMANTIC.light.forEach(t => lines.push('  ' + t.cssVar + ': ' + toVar(t.alias) + '; /* ' + t.hex + ' */'));
+      lines.push('}');
+      return lines.join('\n');
+    }
+
+    function buildAllCSS() {
+      return buildPaletteCSS() + '\n\n' + buildSystemCSS();
+    }
+
+    function renderSnippet(elId, css) {
+      const html = css.split('\n').map(line => {
+        if (line.trim().startsWith('/*')) {
+          return '<span class="css-comment">' + line + '</span>';
+        }
+        if (line.includes('/*')) {
+          const [main, comment] = line.split('/*');
+          return colorLine(main) + '<span class="css-comment">/*' + comment + '</span>';
+        }
+        return colorLine(line);
+      }).join('\n');
+      document.getElementById(elId).innerHTML = html;
+    }
+
+    function colorLine(line) {
+      return line
+        .replace(/^(\s*@theme\b.*)/g, '<span class="css-atrule">$1</span>')
+        .replace(/(--[\w-]+)(?=\s*:)/g, '<span class="css-prop">$1</span>')
+        .replace(/(?<=:\s)([^;/\n]+)/g, '<span class="css-val">$1</span>');
+    }
+
+    function copyGroupCSS(group) {
+      const map = { palette: buildPaletteCSS, system: buildSystemCSS };
+      copyText(map[group]());
+    }
+
+    // ─── INIT ──────────────────────────────────────────────────────────
+    function init() {
+      renderSwatches('swatches-zinc', PALETTE.zinc);
+      renderSwatches('swatches-emerald', PALETTE.emerald);
+      renderSwatches('swatches-neutral', PALETTE.neutral);
+      renderSemantic('dark');
+      updatePreview('dark');
+      renderSnippet('snippet-palette', buildPaletteCSS());
+      renderSnippet('snippet-system', buildSystemCSS());
+    }
+
+    // ─── EVENTS ────────────────────────────────────────────────────────
+
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function applyMode(mode) {
+      currentMode = mode;
+      currentTheme = mode;
+      document.documentElement.dataset.theme = mode;
+      document.getElementById('themeToggle').textContent = mode === 'dark' ? '🌙' : '☀️';
+      document.querySelectorAll('.mode-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+      renderSemantic(mode);
+      updatePreview(mode);
+    }
+
+    document.querySelectorAll('.mode-tab').forEach(btn => {
+      btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+    });
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      applyMode(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    document.querySelectorAll('.format-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        copyFormat = btn.dataset.format;
+        showToast('Copy format: ' + copyFormat.toUpperCase());
+      });
+    });
+
+    document.getElementById('copyAllBtn').addEventListener('click', () => {
+      copyText(buildAllCSS());
+    });
+
+    init();
+  </script>
+</body>
+
+</html>
