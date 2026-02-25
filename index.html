@@ -830,7 +830,7 @@
       border-radius: 10px;
       padding: 12px 14px;
       cursor: pointer;
-      transition: transform 0.1s, border-color 0.15s;
+      transition: transform 0.1s, border-color 0.15s, opacity 0.2s;
     }
 
     .semantic-card:hover {
@@ -876,6 +876,10 @@
       color: var(--ui-accent);
       margin-top: 4px;
       font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    [data-theme="light"] .semantic-alias {
+      color: var(--on-brand-soft); /* #0b7452 — better contrast on light bg */
     }
 
     .copy-hint {
@@ -1113,10 +1117,10 @@
 
     const SEMANTIC = {
       dark: [
-        { name: 'brand', cssVar: '--brand', alias: 'Emerald/200', hex: '#1cf6ae', usage: 'Primary CTA background (e.g. "Explore Athletics" main button)' },
-        { name: 'brand-soft', cssVar: '--brand-soft', alias: 'Emerald/800', hex: '#062318', usage: 'Secondary CTA background (e.g. smaller/ghost brand button)' },
+        { name: 'brand', cssVar: '--brand', alias: 'Emerald/200', hex: '#1cf6ae', usage: 'Primary CTA background' },
+        { name: 'brand-soft', cssVar: '--brand-soft', alias: 'Emerald/800', hex: '#062318', usage: 'Secondary CTA background' },
         { name: 'onBrand', cssVar: '--on-brand', alias: 'Emerald/950', hex: '#030f09', usage: 'Text & icons placed ON a brand background' },
-        { name: 'onBrand-soft', cssVar: '--on-brand-soft', alias: 'Emerald/200', hex: '#1cf6ae', usage: 'Text/icons on brand-soft bg. Also used as accent text color (e.g. card titles)' },
+        { name: 'onBrand-soft', cssVar: '--on-brand-soft', alias: 'Emerald/200', hex: '#1cf6ae', usage: 'Text/icons on brand-soft bg. Also used as accent text color' },
         { name: 'onSurface', cssVar: '--on-surface', alias: 'Zinc/50', hex: '#f7f4ef', usage: 'Primary body text & headings on surface/page background' },
         { name: 'onSurface-soft', cssVar: '--on-surface-soft', alias: 'Zinc/400', hex: '#939190', usage: 'Muted / secondary body text, captions, supporting copy' },
         { name: 'surface', cssVar: '--surface', alias: 'Zinc/950', hex: '#0e0f10', usage: 'Page background' },
@@ -1208,6 +1212,7 @@
       SEMANTIC[mode].forEach(t => {
         const card = document.createElement('div');
         card.className = 'semantic-card';
+        card.dataset.tokenName = t.cssVar.slice(2); // 'on-surface-soft' not 'onSurface-soft'
         card.dataset.search = (t.name + ' ' + t.hex + ' ' + t.cssVar + ' ' + t.alias + ' ' + t.usage).toLowerCase();
         card.innerHTML =
           '<div class="semantic-swatch" style="background:' + t.hex + '"></div>' +
@@ -1255,26 +1260,58 @@
       btnS.style.color = by['onBrand-soft'];
     }
 
-    // ─── PREVIEW TOKEN TOOLTIP ─────────────────────────────────────────
+    // ─── PREVIEW TOKEN TOOLTIP + CARD FOCUS ────────────────────────────
     (function () {
-      const tip = document.getElementById('previewTooltip');
+      const tip    = document.getElementById('previewTooltip');
       const canvas = document.getElementById('previewCanvas');
+      const grid   = document.getElementById('semantic-cards');
+
+      function getCards() { return grid.querySelectorAll('.semantic-card'); }
+
+      function focusCards(activeNames) {
+        getCards().forEach(card => {
+          card.style.opacity = activeNames.includes(card.dataset.tokenName) ? '1' : '0.2';
+        });
+      }
+
+      function resetCards() {
+        getCards().forEach(card => { card.style.opacity = ''; });
+      }
+
+      let lastEl = null;
 
       canvas.addEventListener('mousemove', e => {
         const el = e.target.closest('[data-token]');
-        if (!el) { tip.classList.remove('show'); return; }
+
+        if (!el) {
+          tip.classList.remove('show');
+          if (lastEl) { resetCards(); lastEl = null; }
+          return;
+        }
+
+        // Only recalculate if we moved to a different element
+        if (el !== lastEl) {
+          lastEl = el;
+          const names = [el.dataset.token];
+          if (el.dataset.token2) names.push(el.dataset.token2);
+          focusCards(names);
+        }
+
         const t1 = '--' + el.dataset.token;
         const t2 = el.dataset.token2 ? '  ·  --' + el.dataset.token2 : '';
         tip.textContent = t1 + t2;
-        // Position: prefer right of cursor, flip left if near viewport edge
         const x = e.clientX + 14;
         const y = e.clientY - 32;
         tip.style.left = (x + tip.offsetWidth > window.innerWidth - 8 ? e.clientX - tip.offsetWidth - 10 : x) + 'px';
-        tip.style.top = (y < 8 ? e.clientY + 14 : y) + 'px';
+        tip.style.top  = (y < 8 ? e.clientY + 14 : y) + 'px';
         tip.classList.add('show');
       });
 
-      canvas.addEventListener('mouseleave', () => tip.classList.remove('show'));
+      canvas.addEventListener('mouseleave', () => {
+        tip.classList.remove('show');
+        resetCards();
+        lastEl = null;
+      });
     })();
 
     // ─── CSS SNIPPETS ──────────────────────────────────────────────────
